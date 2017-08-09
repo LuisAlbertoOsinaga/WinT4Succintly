@@ -23,7 +23,7 @@ namespace book
 	public class AppSettings 
 	{ 
 		<# 
-		PushIndent (" "); 
+		PushIndent ("\t"); 
 		var xml = new XmlDocument(); 
 		var configFile = FindConfigFile(); 
 		if (string.IsNullOrEmpty(configFile)) 
@@ -41,8 +41,12 @@ namespace book
 		for (int i=0; i<element.ChildNodes.Count; i++) 
 		{
 			var key = element.ChildNodes[i].Attributes["key"].Value; 
-			var value = this.CurrentIndent + element.ChildNodes[i].Attributes["value"].Value.Trim(); 
-			WriteLine(this.CurrentIndent + "public string " + key + "{get { return \"" + value +"\";}}"); 
+			var value = element.ChildNodes[i].Attributes["value"].Value.Trim();
+			if(i > 0)
+				Write(CurrentIndent);
+			Write("public string " + key + "{get { return \"" + value +"\";}}");
+			if(i < element.ChildNodes.Count - 1)
+				WriteLine("");
 		} 
 		PopIndent(); 
 		#> 

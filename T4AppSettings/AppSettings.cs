@@ -16,10 +16,9 @@ namespace book
 
 	public class AppSettings 
 	{ 
-		 public string PreserveLoginUrl{get { return " true";}}
-  public string ClientValidationEnabled{get { return " true";}}
-  public string UnobtrusiveJavaScriptEnabled{get { return " true";}}
- 
+		public string PreserveLoginUrl{get { return "true";}}
+		public string ClientValidationEnabled{get { return "true";}}
+		public string UnobtrusiveJavaScriptEnabled{get { return "true";}} 
 	}
 }
 
