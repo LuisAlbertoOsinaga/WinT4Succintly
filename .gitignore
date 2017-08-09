@@ -260,3 +260,7 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+
+# Otros
+T4AppSettings/obj/Debug/CoreCompileInputs.cache
+T4AppSettings/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
