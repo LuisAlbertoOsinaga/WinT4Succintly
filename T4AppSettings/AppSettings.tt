@@ -1,3 +1,74 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+﻿<#@ template debug="true" hostspecific="true" language="C#" culture="es-ES" #>
 <#@ assembly name="System.Core" #>
+<#@ assembly name="System.Xml" #>
+<#@ assembly name="EnvDte" #>
+<#@ import namespace="System.Xml" #>
 <#@ output extension=".cs" #>
+
+// Generado por Laos, el <#= DateTime.Today #>
+
+using System; 
+namespace book 
+{ 
+	class Program 
+	{ 
+		static void Hello(string[] args) 
+		{ 
+			Console.WriteLine("Hello World of T4");
+			Console.WriteLine("<#= HelloWorld() #>");
+			Console.ReadKey(); 
+		} 
+	}
+
+	public class AppSettings 
+	{ 
+		<# 
+		PushIndent (" "); 
+		var xml = new XmlDocument(); 
+		var configFile = FindConfigFile(); 
+		if (string.IsNullOrEmpty(configFile)) 
+		{ 
+			Error("No config file found"); 
+			return ""; 
+		} 
+		xml.Load(configFile); 
+		var element = xml.SelectSingleNode ("/configuration/appSettings");
+		if(element == null)
+		{
+			Error("No hay sección '/configuration/appSettings'"); 
+			return "";
+		}
+		for (int i=0; i<element.ChildNodes.Count; i++) 
+		{
+			var key = element.ChildNodes[i].Attributes["key"].Value; 
+			var value = this.CurrentIndent + element.ChildNodes[i].Attributes["value"].Value.Trim(); 
+			WriteLine(this.CurrentIndent + "public string " + key + "{get { return \"" + value +"\";}}"); 
+		} 
+		PopIndent(); 
+		#> 
+	}
+}
+
+<#+ 
+private string HelloWorld() 
+{
+	return "Hola Mundo en este " + DateTime.Today;
+}
+
+public string FindConfigFile () 
+{ 
+	var visualStudio = (this.Host as IServiceProvider)
+							.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE; 
+	var project = visualStudio.Solution.FindProjectItem (this.Host.TemplateFile)
+											.ContainingProject as EnvDTE.Project; 
+	foreach (EnvDTE.ProjectItem item in project.ProjectItems) 
+	{ 
+		if (item.FileNames[0].EndsWith(".config")) 
+		{ 
+			return item.FileNames[0]; 
+		} 
+	} 
+	
+	return ""; 
+}
+#>
